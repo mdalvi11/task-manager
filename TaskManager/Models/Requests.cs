@@ -1,8 +1,8 @@
 namespace TaskManager.Models;
 
 // Auth
-public record RegisterRequets(string FullName, string Email, string Password);
-public record LoginRequet(string Email, string Passowrd);
+public record RegisterRequest(string FullName, string Email, string Password);
+public record LoginRequest(string Email, string Password);
 
 // Projects
 public record CreateProjectRequest(string ProjectName, string? Description, DateTime Deadline);

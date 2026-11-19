@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 
-namespace TaskManager.Models;
+namespace TaskManager.Data;
 
 public interface IDbConnectionFactory
 {
