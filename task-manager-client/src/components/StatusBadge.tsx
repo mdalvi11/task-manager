@@ -1,4 +1,5 @@
-import type { ProjectStatus, TaskStatus } from '../types/task';
+import type { ProjectStatus } from '../types/project';
+import type { TaskStatus } from '../types/task';
 
 type BadgeStatus = TaskStatus | ProjectStatus;
 

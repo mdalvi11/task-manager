@@ -7,6 +7,7 @@ import { CreateTaskModal } from '../components/CreateTaskModal';
 import { ManageMembersModal } from '../components/ManageMembersModal';
 import { PriorityBadge } from '../components/PriorityBadge';
 import { StatusBadge } from '../components/StatusBadge';
+import { TaskDetailDrawer } from '../components/TaskDetailDrawer';
 import { useAuth } from '../context/AuthContext';
 import type { ProjectDetail, ProjectRole, ProjectStatus } from '../types/project';
 import type {
@@ -42,6 +43,7 @@ export function ProjectBoardPage() {
 
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [membersModalOpen, setMembersModalOpen] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [editingProject, setEditingProject] = useState(false);
   const [editName, setEditName] = useState('');
   const [editDesc, setEditDesc] = useState('');
@@ -121,6 +123,7 @@ export function ProjectBoardPage() {
     try {
       setError(null);
       await taskApi.remove(taskId);
+      if (selectedTaskId === taskId) setSelectedTaskId(null);
       await Promise.all([loadTasks(), loadProjectAndTags()]);
     } catch (err) {
       setError(getApiErrorMessage(err, 'Failed to delete task.'));
@@ -416,7 +419,13 @@ export function ProjectBoardPage() {
                 {tasks.map((task) => (
                   <tr key={task.taskId} className="hover:bg-slate-50/60">
                     <td className="py-3 px-4">
-                      <div className="font-medium text-slate-900">{task.title}</div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTaskId(task.taskId)}
+                        className="font-medium text-slate-900 hover:underline text-left cursor-pointer"
+                      >
+                        {task.title}
+                      </button>
                       {task.parentTaskTitle && (
                         <div className="text-xs text-slate-400 mt-0.5">
                           Subtask of: {task.parentTaskTitle}
@@ -523,6 +532,17 @@ export function ProjectBoardPage() {
         members={project.members}
         onClose={() => setMembersModalOpen(false)}
         onUpdated={loadProjectAndTags}
+      />
+
+      <TaskDetailDrawer
+        taskId={selectedTaskId}
+        projectId={project.projectId}
+        members={project.members}
+        allTags={tags}
+        onClose={() => setSelectedTaskId(null)}
+        onMutated={async () => {
+          await Promise.all([loadTasks(), loadProjectAndTags()]);
+        }}
       />
     </div>
   );
