@@ -1,6 +1,52 @@
-@TaskManager_HostAddress = http://localhost:5081
+@Host = http://localhost:5081
 
-GET {{TaskManager_HostAddress}}/weatherforecast/
-Accept: application/json
+### Register a real user (sets access_token cookie automatically)
+POST {{Host}}/api/auth/register
+Content-Type: application/json
 
-###
+{
+  "fullName": "Owais Test",
+  "email": "owais@university.edu",
+  "password": "Password123!"
+}
+
+### Verify current session from cookie
+GET {{Host}}/api/auth/me
+
+### Create a Project (calls sp_CreateProjectWithOwner)
+POST {{Host}}/api/projects
+Content-Type: application/json
+
+{
+  "projectName": "DBMS Final Project",
+  "description": "Task management system with SQL Server triggers and views",
+  "deadline": "2026-12-20T23:59:59Z"
+}
+
+### Create a Task with Tags (calls sp_CreateTaskWithTags)
+POST {{Host}}/api/projects/1/tasks
+Content-Type: application/json
+
+{
+  "assigneeId": 1,
+  "parentTaskId": null,
+  "title": "Test Audit Log Trigger",
+  "description": "Move status to Done and verify TaskAuditLogs",
+  "priority": "High",
+  "dueDate": "2026-12-01T17:00:00Z",
+  "tagIds": [1, 2]
+}
+
+### Update Task Status (fires trg_Tasks_AuditUpdate)
+PATCH {{Host}}/api/tasks/1/status
+Content-Type: application/json
+
+{
+  "status": "Done"
+}
+
+### View Full Task Details + Audit Trail
+GET {{Host}}/api/tasks/1
+
+### View Analytics Dashboard Overview (queries SQL Views)
+GET {{Host}}/api/dashboard/overview

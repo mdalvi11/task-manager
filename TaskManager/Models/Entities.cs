@@ -43,5 +43,5 @@ public record TaskAuditLogEntity(
     string FieldChanged,
     string? OldValue,
     string? NewValue,
-    DateTime ChangeAt
+    DateTime ChangedAt
 );

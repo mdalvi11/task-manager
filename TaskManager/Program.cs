@@ -1,8 +1,15 @@
 using System.Text;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Data;
 using TaskManager.Endpoints;
+
+Env.Load();
+
+// Map flat .env keys into ASP.NET Core's hierarchical configuration keys
+Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection", Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
+Environment.SetEnvironmentVariable("Jwt__Secret", Environment.GetEnvironmentVariable("JWT_SECRET"));
 
 var builder = WebApplication.CreateBuilder(args);
 
